@@ -1,0 +1,88 @@
+name: DevSecOps Pipeline - Conecta+
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security-and-build:
+    name: Build, IaC Validate, Gitleaks, Semgrep e Trivy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks - Detecção de segredos
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Semgrep - Análise estática de segurança (SAST)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/python
+            p/security-audit
+            p/secrets
+
+      - name: Terraform - Setup e Validação IaC
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform Init e Validate
+        working-directory: app/terraform
+        run: |
+          terraform init -backend=false
+          terraform validate
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências e rodar testes
+        working-directory: app
+        run: |
+          pip install --no-cache-dir -r requirements-dev.txt
+          python -m pytest tests -q
+
+      - name: Build da imagem Docker do Conecta+
+        run: |
+          docker build -t conecta-plus:ci ./app
+
+      - name: Trivy - Scan de vulnerabilidades na imagem
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: "conecta-plus:ci"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+
+  deploy:
+    name: Deploy Automático no Render
+    needs: security-and-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Disparar Deploy Hook no Render
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "Erro: secret RENDER_DEPLOY_HOOK_URL não configurado."
+            exit 1
+          fi
+          curl -fsSL -X POST "$RENDER_DEPLOY_HOOK_URL"

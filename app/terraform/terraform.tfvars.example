@@ -1,0 +1,4 @@
+location     = "brazilsouth"
+project_name = "conectamais"
+# Substitua pelo IP/CIDR da sua máquina (ex.: "203.0.113.10/32") no seu terraform.tfvars local
+admin_cidr   = "192.0.2.10/32"

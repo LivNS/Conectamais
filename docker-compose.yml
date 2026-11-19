@@ -1,0 +1,19 @@
+services:
+  conecta-plus:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: conecta-plus-mvp
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - DATABASE_PATH=/dados/app.sqlite3
+      - APP_NOME=Conecta+
+      - ALERTAS_DEMONSTRACAO=1
+    volumes:
+      - conecta_dados:/dados
+    restart: unless-stopped
+
+volumes:
+  conecta_dados:

@@ -4,7 +4,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
-RUN useradd --create-home --uid 10001 app && mkdir -p /dados && chown app /dados
+RUN useradd --create-home --uid 10001 app && mkdir -p /dados && chown -R app:app /app /dados
 USER app
 WORKDIR /app/src/app_alertas
 EXPOSE 8000
