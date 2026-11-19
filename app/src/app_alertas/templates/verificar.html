@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar %}
+{% block titulo %}É golpe? · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/", "Início") }}{% endblock %}
+{% block conteudo %}
+<h1>É golpe?</h1>
+<p style="font-size:1.09rem">Copie a mensagem que você recebeu. Depois, toque no botão amarelo.</p>
+
+<button type="button" class="colar-grande" data-colar-mensagem>{{ icone("colar") }}Colar a mensagem</button>
+<p class="erro-gentil" data-colar-aviso role="status" hidden></p>
+
+<form method="post" action="/verificar" style="display:flex;flex-direction:column;gap:.6rem">
+  <label class="rotulo" for="texto">Ou cole aqui dentro:</label>
+  <textarea id="texto" name="texto" maxlength="4000" required placeholder="Toque e segure aqui, depois escolha Colar">{{ texto }}</textarea>
+  <input type="hidden" name="aparelho" value="">
+  <div data-confirma {% if not texto %}hidden{% endif %}>
+    <button class="botao" type="submit">{{ icone("lupa") }}Conferir a mensagem</button>
+  </div>
+  <p class="aviso-privado">{{ icone("cadeado") }}<span>A mensagem não fica guardada e os links não são abertos. Não cole senhas nem códigos.</span></p>
+</form>
+
+<a class="botao claro" href="/aprender/celular/copiar">Não sei copiar</a>
+
+<div style="margin-top:.4rem">
+  <p class="nota" style="margin-bottom:.4rem">Quer ver como funciona? Use uma mensagem inventada:</p>
+  <div class="exemplos-mini">
+    {% for e in exemplos %}<a href="/verificar?exemplo={{ loop.index0 }}#texto">{{ e.titulo }}</a>{% endfor %}
+  </div>
+</div>
+{% endblock %}

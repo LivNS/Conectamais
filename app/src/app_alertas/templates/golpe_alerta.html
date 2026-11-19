@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir %}
+{% block titulo %}{{ a.titulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/golpes", "Golpes") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#alerta") }}{% endblock %}
+{% block conteudo %}
+<article id="alerta" style="display:flex;flex-direction:column;gap:.8rem">
+  <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+    <span class="etiqueta amarela">Golpe novo</span>
+    <span class="etiqueta cinza">{{ a.tema_rotulo }}</span>
+  </div>
+  <h1>{{ a.titulo }}</h1>
+  <div class="truque"><b>O que está acontecendo</b><p>{{ a.resumo_simples }}</p></div>
+  <h2>Faça assim:</h2>
+  <div class="acoes-lista">
+    {% for d in a.como_se_proteger %}<div class="acao"><span class="circulo">{{ icone("check") }}</span><b>{{ d }}</b></div>{% endfor %}
+  </div>
+</article>
+<div class="pilha">
+  {% if relacionado %}<a class="botao verde" href="/golpes/{{ relacionado.id }}">Entender o golpe: {{ relacionado.curto }}</a>{% endif %}
+  {% if a.tema in licoes %}<a class="botao claro" href="/aprender/{{ a.tema }}">Fazer a aula sobre este golpe</a>{% endif %}
+  <a class="botao claro" href="/verificar">Recebi uma assim</a>
+</div>
+<p class="nota">
+  {% if a.origem == "demonstracao" %}Alerta de demonstração, criado para mostrar como esta área funciona.
+  {% else %}Fonte: {{ a.fonte_nome }}{% if a.data_publicacao %}, {{ a.data_publicacao | data_curta }}{% endif %}. Conferido por uma pessoa antes de publicar.
+  {% if a.link_fonte %}<br><a href="{{ a.link_fonte }}" rel="noopener noreferrer" target="_blank">Ler o aviso no site da fonte</a>{% endif %}{% endif %}
+</p>
+{% endblock %}

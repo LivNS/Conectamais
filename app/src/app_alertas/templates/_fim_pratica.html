@@ -1,0 +1,11 @@
+{# Espera: proxima (lição ou None), texto_fim #}
+<div class="parabens">
+  <span class="circulo">{{ icone("check") }}</span>
+  <h2 style="font-size:1.6rem;margin:0">Muito bem!</h2>
+  <p style="font-size:1.09rem">{{ texto_fim }}</p>
+</div>
+<div class="pilha">
+  {% if proxima %}<a class="botao" href="/aprender/celular/{{ proxima.id }}">Próxima: {{ proxima.titulo }}</a>{% endif %}
+  <a class="botao claro" href="/aprender">Ver todas as lições</a>
+  <button type="button" class="botao claro" data-reiniciar>Treinar de novo</button>
+</div>

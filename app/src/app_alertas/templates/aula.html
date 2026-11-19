@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir %}
+{% block titulo %}{{ a.titulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/aprender#nivel2", "Lições") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#aula") }}{% endblock %}
+{% block conteudo %}
+<div id="aula" class="verde-tema" data-aula="{{ a.id }}" style="display:flex;flex-direction:column;gap:.8rem">
+  <script type="application/json" data-pergunta-dados>{{ a.pergunta | tojson }}</script>
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <span class="etiqueta verde">Nível 2 · Aula</span>
+    <span class="progresso-passos"><span class="bolinhas" data-bolinhas aria-hidden="true">{% for t in a.telas %}<i></i>{% endfor %}<i></i></span></span>
+  </div>
+
+  {% for t in a.telas %}
+  <section data-tela {% if not loop.first %}hidden{% endif %} style="display:flex;flex-direction:column;gap:.8rem">
+    <h1>{{ t.titulo }}</h1>
+    <div class="figura-aula" aria-hidden="true">
+      {% if t.figura == "endereco" %}
+        <span class="pilula-link">{{ icone("link") }}bancohorizonte.com.br</span>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3E5565" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M6 13l6 6 6-6"/></svg>
+        <span class="grande" style="background:var(--nevoa);color:var(--azul)">{{ icone("casa") }}</span>
+      {% elif t.figura == "copia" %}
+        <div class="comparar bom"><span class="circulo">{{ icone("check") }}</span><span><b>bancohorizonte.com.br</b><small>O verdadeiro</small></span></div>
+        <div class="comparar ruim"><span class="circulo">{{ icone("x") }}</span><span><b>banco<mark>-</mark>horizonte<mark>.site</mark></b><small>O falso</small></span></div>
+      {% elif t.figura == "seguro" %}
+        <div class="linha">
+          <span class="grande" style="background:var(--alto-fundo);color:var(--alto)">{{ icone("link-off") }}</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3E5565" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <span class="grande" style="background:var(--verde-claro);color:var(--verde)">{{ icone("celular") }}</span>
+        </div>
+      {% elif t.figura == "chave" %}
+        <span class="grande" style="background:var(--nevoa);color:var(--azul)">{{ icone("cadeado") }}</span>
+        <span class="pilula-link">••••••••</span>
+      {% elif t.figura == "fraca" %}
+        <div class="comparar ruim"><span class="circulo">{{ icone("x") }}</span><span><b>123456</b><small>A primeira que tentam</small></span></div>
+        <div class="comparar ruim"><span class="circulo">{{ icone("x") }}</span><span><b>15/03/1948</b><small>Data de nascimento</small></span></div>
+      {% elif t.figura == "frase" %}
+        <div class="comparar bom"><span class="circulo">{{ icone("check") }}</span><span><b>CafeComPaoNaJanela</b><small>Fácil de lembrar, difícil de adivinhar</small></span></div>
+      {% endif %}
+    </div>
+    <p class="passo-texto">{{ t.texto }}</p>
+  </section>
+  {% endfor %}
+
+  <section data-pergunta hidden style="display:flex;flex-direction:column;gap:.8rem">
+    <h1>{{ a.pergunta.texto }}</h1>
+    <div class="opcoes" data-opcoes role="group" aria-label="Respostas"></div>
+    <div data-retorno role="status"></div>
+  </section>
+
+  <section data-fim hidden>
+    <div class="parabens">
+      <span class="circulo">{{ icone("check") }}</span>
+      <h1>Aula concluída!</h1>
+      <p style="font-size:1.09rem">Você aprendeu: {{ a.titulo | lower }}.</p>
+    </div>
+    <div class="pilha">
+      {% if proxima %}<a class="botao verde" href="{{ proxima.url }}">Próxima aula: {{ proxima.titulo }}</a>{% endif %}
+      <a class="botao claro" href="/aprender#nivel2">Ver todas as aulas</a>
+      <button type="button" class="botao claro" data-reiniciar>Ver a aula de novo</button>
+    </div>
+  </section>
+
+  <div class="pilha" data-rodape>
+    <button type="button" class="botao" data-proximo>Próximo</button>
+    <button type="button" class="botao claro" data-anterior hidden>Voltar</button>
+  </div>
+</div>
+{% endblock %}

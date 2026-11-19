@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% block conteudo %}
+<h1 class="saudacao">Olá! O que vamos fazer?</h1>
+
+<a class="bloco azul" href="/aprender">
+  <span class="bloco-icone">{{ icone("celular") }}</span>
+  <span class="bloco-texto"><b>Aprender o celular</b><span class="etiqueta" data-progresso-inicio="{{ ids_nivel1 | join(',') }}">Comece aqui</span></span>
+</a>
+
+<a class="bloco verde" href="/verificar">
+  <span class="bloco-icone">{{ icone("escudo") }}</span>
+  <span class="bloco-texto"><b>É golpe?</b><small>Confira uma mensagem</small></span>
+</a>
+
+<a class="bloco-alerta" href="/golpes">
+  <span class="bloco-icone">{{ icone("sino") }}</span>
+<span><b>Golpes do momento</b><span class="bloco-alerta-texto">{% if ultimo %}Novo: {{ ultimo.titulo | truncate(70) }}{% else %}Conheça os golpes mais comuns{% endif %}</span></span>
+</a>
+{% endblock %}

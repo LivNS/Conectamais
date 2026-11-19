@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir %}
+{% block titulo %}{{ l.titulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/aprender", "Lições") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#treino") }}{% endblock %}
+{% block conteudo %}
+<div id="treino" data-treino style="display:flex;flex-direction:column;gap:.8rem">
+  <h1>Treinar o toque</h1>
+  <p class="sub">Quase tudo no celular é feito com estes 3 gestos.</p>
+  <div class="abas-treino" role="tablist" aria-label="Gestos">
+    <button type="button" role="tab" data-aba="tocar" aria-selected="true">Tocar</button>
+    <button type="button" role="tab" data-aba="segurar" aria-selected="false">Segurar</button>
+    <button type="button" role="tab" data-aba="arrastar" aria-selected="false">Arrastar</button>
+  </div>
+
+  <section class="cartao" data-painel="tocar" role="tabpanel" style="display:flex;flex-direction:column;gap:.6rem">
+    <p class="passo-texto">Toque no círculo amarelo. Ele muda de lugar.</p>
+    <div class="area-toque"><button type="button" class="alvo-toque anel" data-alvo-toque aria-label="Círculo amarelo: toque aqui"></button></div>
+    <p class="nota" data-contagem-toque role="status">0 de 3 toques</p>
+  </section>
+
+  <section class="cartao" data-painel="segurar" role="tabpanel" hidden style="display:flex;flex-direction:column;gap:.6rem">
+    <p class="passo-texto">Encoste o dedo e não solte até a barra verde encher.</p>
+    <button type="button" class="carga" data-carga><i></i><span>Segure aqui</span></button>
+  </section>
+
+  <section class="cartao" data-painel="arrastar" role="tabpanel" hidden style="display:flex;flex-direction:column;gap:.6rem">
+    <label class="passo-texto" for="trilho">Leve a bolinha amarela até a bandeira, sem soltar o dedo.</label>
+    <div style="display:flex;align-items:center;gap:.4rem">
+      <input id="trilho" class="trilho" type="range" min="0" max="100" step="1" value="0" data-trilho>
+      <span style="color:var(--verde);width:1.6rem">{{ icone("bandeira") }}</span>
+    </div>
+  </section>
+
+  <p class="comparacao" data-msg role="status" hidden></p>
+
+  <div data-tudo hidden>
+    {% with texto_fim="Você já sabe os 3 gestos do celular." %}{% include "_fim_pratica.html" %}{% endwith %}
+  </div>
+  <p class="treino-seguro">{{ icone("escudo-simples") }}É só um treino: nada é enviado</p>
+</div>
+{% endblock %}

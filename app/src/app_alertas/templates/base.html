@@ -1,0 +1,50 @@
+{% from "_icones.html" import icone %}<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>{% block titulo %}{{ app_nome }}: aprender o celular e não cair em golpe{% endblock %}</title>
+<meta name="description" content="Aprenda a usar o celular com calma e confira se uma mensagem é golpe.">
+<link rel="icon" href="/static/selo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/static/icone-180.png">
+<link rel="manifest" href="/static/manifest.webmanifest">
+<script>
+  /* Antes de desenhar a tela: tamanho de letra escolhido e tipo de celular (só neste aparelho). */
+  (function () {
+    var h = document.documentElement;
+    try { var l = localStorage.getItem("c.letra"); if (l) h.setAttribute("data-letra", l); } catch (e) {}
+    var c = null;
+    try { c = localStorage.getItem("c.celular"); } catch (e) {}
+    if (!c) c = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? "iphone" : "android";
+    h.setAttribute("data-celular", c);
+  })();
+</script>
+<link rel="preload" href="/static/fontes/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/static/estilo.css?v=4">
+<script src="/static/app.js?v=4" defer></script>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topo">
+  <div class="topo-dentro">
+    {% block voltar %}<a class="marca" href="/"><img src="/static/selo.svg" alt="">{{ app_nome }}</a>{% endblock %}
+    <div class="topo-acoes">
+      {% block ouvir %}{% endblock %}
+      <button type="button" class="pilula botao-letra" data-letra aria-label="Mudar o tamanho da letra">A<span>A</span></button>
+    </div>
+  </div>
+</header>
+<main id="conteudo">
+{% block conteudo %}{% endblock %}
+</main>
+<footer class="rodape">
+  <nav aria-label="Rodapé">
+    <a href="/privacidade">Como cuidamos dos seus dados</a>
+    <a href="/impacto">Resultados do projeto</a>
+    <a href="/revisao">Área do revisor</a>
+  </nav>
+  <p>O {{ app_nome }} orienta, mas não substitui o seu banco nem as autoridades. Na dúvida, confirme pelo canal oficial.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+{
+  "nivel1": {
+    "titulo": "Primeiros passos",
+    "descricao": "Usar o celular no dia a dia",
+    "licoes": [
+      {
+        "id": "toque", "titulo": "Treinar o toque", "icone": "dedo", "tipo": "toque",
+        "resumo": "Tocar, segurar e arrastar"
+      },
+      {
+        "id": "audio", "titulo": "Mandar áudio", "icone": "microfone", "tipo": "audio",
+        "resumo": "Segure, fale e solte"
+      },
+      {
+        "id": "copiar", "titulo": "Copiar e colar", "icone": "copiar", "tipo": "copiar",
+        "resumo": "Para conferir mensagens aqui"
+      },
+      {
+        "id": "letra", "titulo": "Letra maior", "icone": "letra", "tipo": "passos",
+        "resumo": "Ler sem forçar a vista",
+        "android": [
+          "Abra as Configurações. É o ícone de engrenagem.",
+          "Toque em Tela. Em alguns celulares o nome é Visor.",
+          "Toque em Tamanho da fonte.",
+          "Arraste a bolinha para a direita até ficar bom de ler."
+        ],
+        "iphone": [
+          "Abra os Ajustes. É o ícone de engrenagem.",
+          "Toque em Tela e Brilho.",
+          "Toque em Tamanho do Texto.",
+          "Arraste a bolinha para a direita até ficar bom de ler."
+        ]
+      },
+      {
+        "id": "ligar", "titulo": "Ligar e atender", "icone": "telefone", "tipo": "passos",
+        "resumo": "Fazer e receber ligações",
+        "android": [
+          "Toque no ícone do telefone. Ele é verde ou azul.",
+          "Toque em Teclado e digite o número.",
+          "Toque no botão verde para ligar.",
+          "Quando alguém ligar, arraste ou toque no botão verde para atender."
+        ],
+        "iphone": [
+          "Toque no ícone verde do Telefone.",
+          "Toque em Teclado e digite o número.",
+          "Toque no botão verde para ligar.",
+          "Quando alguém ligar, toque no botão verde ou arraste a faixa para atender."
+        ]
+      },
+      {
+        "id": "volume", "titulo": "Volume", "icone": "som", "tipo": "passos",
+        "resumo": "Ouvir melhor as ligações",
+        "android": [
+          "Procure os botões na lateral do celular.",
+          "O botão de cima aumenta o som. O de baixo diminui.",
+          "Durante uma ligação, aperte o de cima para ouvir mais alto."
+        ],
+        "iphone": [
+          "Procure os botões na lateral esquerda do iPhone.",
+          "O botão de cima aumenta o som. O de baixo diminui.",
+          "Durante uma ligação, aperte o de cima para ouvir mais alto."
+        ]
+      },
+      {
+        "id": "video", "titulo": "Chamada de vídeo", "icone": "video", "tipo": "passos",
+        "resumo": "Ver a família pelo WhatsApp",
+        "android": [
+          "Abra o WhatsApp e toque na conversa da pessoa.",
+          "Toque no desenho de câmera, no alto da tela.",
+          "Espere a pessoa atender. Segure o celular na frente do rosto.",
+          "Para desligar, toque no botão vermelho."
+        ],
+        "iphone": [
+          "Abra o WhatsApp e toque na conversa da pessoa.",
+          "Toque no desenho de câmera, no alto da tela.",
+          "Espere a pessoa atender. Segure o celular na frente do rosto.",
+          "Para desligar, toque no botão vermelho."
+        ]
+      },
+      {
+        "id": "bloquear", "titulo": "Bloquear número", "icone": "bloquear", "tipo": "passos",
+        "resumo": "Parar mensagens de golpistas",
+        "android": [
+          "No WhatsApp, abra a conversa do número estranho.",
+          "Toque no nome ou no número, no alto da tela.",
+          "Desça até o fim e toque em Bloquear.",
+          "Confirme tocando em Bloquear de novo."
+        ],
+        "iphone": [
+          "No WhatsApp, abra a conversa do número estranho.",
+          "Toque no nome ou no número, no alto da tela.",
+          "Desça até o fim e toque em Bloquear.",
+          "Confirme tocando em Bloquear de novo."
+        ]
+      },
+      {
+        "id": "icone", "titulo": "Conecta+ na tela", "icone": "grade", "tipo": "passos",
+        "resumo": "Achar este app com um toque",
+        "android": [
+          "Abra este site no Chrome.",
+          "Toque nos três pontinhos, no canto de cima.",
+          "Toque em Adicionar à tela inicial.",
+          "Toque em Adicionar. O ícone aparece junto dos outros aplicativos."
+        ],
+        "iphone": [
+          "Abra este site no Safari.",
+          "Toque no botão Compartilhar: um quadrado com uma seta para cima.",
+          "Desça e toque em Adicionar à Tela de Início.",
+          "Toque em Adicionar. O ícone aparece junto dos outros aplicativos."
+        ]
+      }
+    ]
+  },
+  "aulas": [
+    {
+      "id": "link", "titulo": "O que é um link", "icone": "link",
+      "telas": [
+        {"titulo": "Um link é um endereço", "texto": "É como o endereço de uma casa. Tocar no link leva você até lá.", "figura": "endereco"},
+        {"titulo": "O golpista copia o endereço", "texto": "Um tracinho ou uma letra a mais já leva para outra casa: a do golpista.", "figura": "copia"},
+        {"titulo": "O jeito seguro", "texto": "Não toque no link da mensagem. Abra o aplicativo do banco você mesmo.", "figura": "seguro"}
+      ],
+      "pergunta": {
+        "texto": "Chegou um link do banco por mensagem. O que você faz?",
+        "opcoes": ["Toco no link para ver", "Abro o app do banco eu mesmo", "Respondo perguntando se é verdade"],
+        "correta": 1,
+        "certo": "Isso mesmo! Assim você chega ao banco por um caminho que você controla.",
+        "errado": "Quase. O mais seguro é abrir o app do banco você mesmo, sem tocar no link."
+      }
+    },
+    {
+      "id": "senha", "titulo": "Senha forte", "icone": "cadeado",
+      "telas": [
+        {"titulo": "A senha é a chave da sua casa", "texto": "Quem tem a senha entra no seu celular, no banco e no WhatsApp.", "figura": "chave"},
+        {"titulo": "Senha fácil abre fácil", "texto": "Data de nascimento e 123456 são as primeiras que o golpista tenta.", "figura": "fraca"},
+        {"titulo": "Senha boa é uma frase", "texto": "Junte três palavras que só você liga, como CafeComPaoNaJanela. E nunca conte a ninguém.", "figura": "frase"}
+      ],
+      "pergunta": {
+        "texto": "Qual destas senhas é mais segura?",
+        "opcoes": ["12345678", "A data do meu aniversário", "Três palavras que só eu ligo"],
+        "correta": 2,
+        "certo": "Isso! Uma frase só sua é fácil de lembrar e difícil de adivinhar.",
+        "errado": "Essa é fácil de adivinhar. Prefira três palavras que só você liga."
+      }
+    }
+  ]
+}

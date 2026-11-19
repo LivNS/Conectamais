@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir, mensagem %}
+{% block titulo %}{{ licao.titulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/aprender#nivel2", "Lições") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#licao") }}{% endblock %}
+{% block conteudo %}
+<article id="licao" data-licao="{{ licao.id }}" style="display:flex;flex-direction:column;gap:.8rem">
+  <span class="etiqueta verde">Nível 2 · Golpe {{ numero }} de {{ total }}</span>
+  <h1>{{ licao.titulo }}</h1>
+  <p class="rotulo-pequeno">Chega assim:</p>
+  {{ mensagem(exemplo) }}
+  {% for p in licao.paragrafos %}<p>{{ p }}</p>{% endfor %}
+  <h2>Sinais para reparar</h2>
+  <ul class="sinais">{% for s in licao.sinais %}<li>{{ s }}</li>{% endfor %}</ul>
+  <h2>Faça assim:</h2>
+  <div class="acoes-lista">{% for f in licao.fazer %}<div class="acao"><span class="circulo">{{ icone("check") }}</span><b>{{ f }}</b></div>{% endfor %}</div>
+</article>
+
+<section class="quiz" aria-labelledby="t-quiz" style="margin-top:.6rem">
+  <h2 id="t-quiz" style="margin:0 0 .5rem">Agora, três perguntas</h2>
+  <div data-quiz data-tipo="licao" data-licao="{{ licao.id }}"></div>
+  <script type="application/json" data-quiz-dados>{{ licao.quiz | tojson }}</script>
+  <noscript><p>Para responder as perguntas, ative o JavaScript do navegador.</p></noscript>
+</section>
+
+<div class="pilha" data-depois-quiz hidden>
+  {% if proxima %}<a class="botao verde" href="/aprender/{{ proxima.id }}">Próximo: {{ proxima.titulo }}</a>
+  {% else %}<a class="botao verde" href="/aprender/teste/pos">Fazer o teste final</a>{% endif %}
+  <a class="botao claro" href="/aprender#nivel2">Ver todas as aulas</a>
+</div>
+{% endblock %}

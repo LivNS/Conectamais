@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir %}
+{% block titulo %}{{ l.titulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/aprender", "Lições") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#licao-copiar") }}{% endblock %}
+{% block conteudo %}
+<div id="licao-copiar" data-licao-copiar data-titulos='["Segure o dedo na mensagem", "Toque em Copiar", "Agora segure o dedo na caixa", "Toque em Colar", "Pronto! Você copiou e colou."]' style="display:flex;flex-direction:column;gap:.8rem">
+  <div class="progresso-passos"><span class="bolinhas" aria-hidden="true"><i data-bolinha class="on"></i><i data-bolinha></i><i data-bolinha></i><i data-bolinha></i><i data-bolinha></i></span><span>Passo <span data-num>1</span> de 5</span></div>
+  <h1 data-titulo aria-live="polite">Segure o dedo na mensagem</h1>
+
+  <div class="simulador">
+    <div class="copiar-area">
+      <button type="button" class="segurar-texto" data-texto aria-label="Mensagem: segure para copiar">Banco Horizonte: compra suspeita. Acesse urgente bit.ly/hz-seguro</button>
+      <div class="menu-flutuante" data-fase="1"><button type="button" class="alvo anel" data-copiar>Copiar</button><button type="button" tabindex="-1">Responder</button></div>
+      <p class="nota" data-fase="2" hidden style="color:var(--verde-escuro);font-weight:700">Copiado!</p>
+      <button type="button" class="caixa-colar" data-caixa aria-label="Caixa de mensagem: segure para colar">Caixa de mensagem</button>
+      <div class="menu-flutuante" data-fase="3" hidden><button type="button" class="alvo anel" data-colar>Colar</button></div>
+    </div>
+  </div>
+
+  <p class="erro-gentil" data-erro role="status" hidden></p>
+
+  <div data-fase="4" hidden>
+    <div class="parabens">
+      <span class="circulo">{{ icone("check") }}</span>
+      <h2 style="font-size:1.6rem;margin:0">Muito bem!</h2>
+      <p style="font-size:1.09rem">É assim que você traz uma mensagem estranha para conferir aqui.</p>
+    </div>
+    <div class="pilha">
+      <a class="botao verde" href="/verificar">{{ icone("escudo") }}Conferir uma mensagem</a>
+      <a class="botao claro" href="/aprender">Ver todas as lições</a>
+      <button type="button" class="botao claro" data-reiniciar>Treinar de novo</button>
+    </div>
+  </div>
+  <p class="treino-seguro">{{ icone("escudo-simples") }}É só um treino: nada é enviado</p>
+</div>
+{% endblock %}

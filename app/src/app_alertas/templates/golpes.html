@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar %}
+{% block titulo %}Golpes · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/", "Início") }}{% endblock %}
+{% block conteudo %}
+<div>
+  <h1>Golpes</h1>
+  <p class="sub" style="font-size:1rem;margin-top:.2rem">Conheça para não cair.</p>
+</div>
+
+<section aria-labelledby="t-novos" style="display:flex;flex-direction:column;gap:.55rem">
+  <div class="titulo-linha">
+    <h2 id="t-novos">Golpes novos</h2>
+    <span class="conferidos">{{ icone("escudo") }}Conferidos por uma pessoa</span>
+  </div>
+  {% for a in novos %}
+  <a class="novo-cartao" href="/golpes/alerta/{{ a.id }}">
+    <span><b>{{ a.titulo }}</b><small>{% if a.origem == "demonstracao" %}Alerta de demonstração{% else %}Fonte: {{ a.fonte_nome }}{% if a.data_publicacao %} · {{ a.data_publicacao | data_curta }}{% endif %}{% endif %}</small></span>
+    {{ icone("seta") }}
+  </a>
+  {% else %}
+  <p class="vazio">Nenhum golpe novo publicado agora. Veja abaixo os golpes de sempre.</p>
+  {% endfor %}
+  {% if tem_mais %}<a class="botao claro" href="/golpes?todos=1#t-novos">Ver mais golpes novos ({{ total_novos }})</a>{% endif %}
+</section>
+
+<section aria-labelledby="t-sempre" style="display:flex;flex-direction:column;gap:.55rem">
+  <h2 id="t-sempre">Os golpes de sempre</h2>
+  <div class="grade">
+    {% for g in catalogo %}
+    <a class="ladrilho golpe" href="/golpes/{{ g.id }}">
+      <span class="ladrilho-icone">{{ icone(g.icone) }}</span>
+      <b>{{ g.curto }}</b>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+<p class="nota">Avisos tirados de portais oficiais por um robô e conferidos por uma pessoa antes de aparecer aqui.</p>
+{% endblock %}

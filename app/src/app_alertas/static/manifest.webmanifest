@@ -1,0 +1,14 @@
+{
+  "name": "Conecta+",
+  "short_name": "Conecta+",
+  "description": "Aprenda a usar o celular e confira se uma mensagem é golpe.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EEF4F8",
+  "theme_color": "#1D5FA8",
+  "lang": "pt-BR",
+  "icons": [
+    {"src": "/static/icone-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/static/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

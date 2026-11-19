@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar %}
+{% block titulo %}Revisão de alertas · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/golpes", "Golpes") }}{% endblock %}
+{% block conteudo %}
+<h1>Revisão de alertas</h1>
+<p class="sub">O robô entrega rascunhos. Nada aparece para o público sem a sua aprovação.</p>
+<div class="contagem">
+  <span>{{ contagem.get("pendente_revisao", 0) }} esperando revisão</span>
+  <span>{{ contagem.get("publicado", 0) }} publicados</span>
+  <span>{{ contagem.get("rejeitado", 0) }} rejeitados</span>
+</div>
+{% if feito %}<p class="ok-msg" role="status">Alerta {{ feito }}.</p>{% endif %}
+
+{% for a in pendentes %}
+<article class="rascunho" aria-labelledby="r-{{ a.id }}">
+  <p class="meta"><span class="etiqueta cinza">{{ a.tema_rotulo }}</span>
+    <span>{{ a.fonte_nome }}{% if a.data_publicacao %}, {{ a.data_publicacao | data_curta }}{% endif %}</span>
+    <span>Recebido em {{ a.criado_em | data_curta }}</span></p>
+  <h2 id="r-{{ a.id }}">{{ a.titulo }}</h2>
+  <p>{{ a.resumo_simples }}</p>
+  <ul class="lista">{% for d in a.como_se_proteger %}<li>{{ d }}</li>{% endfor %}</ul>
+  {% if a.link_fonte %}<p><a href="{{ a.link_fonte }}" rel="noopener noreferrer" target="_blank">Conferir na fonte original</a></p>{% endif %}
+  {% if a.precisa_revisar_tema %}<p class="alerta-dado">O robô não reconheceu o tema. Escolha um antes de aprovar.</p>{% endif %}
+  <form method="post" action="/revisao/{{ a.id }}">
+    <label for="tema-{{ a.id }}">Tema</label>
+    <select id="tema-{{ a.id }}" name="tema" {% if a.precisa_revisar_tema %}required{% endif %}>
+      {% if a.precisa_revisar_tema %}<option value="">Escolha o tema</option>{% endif %}
+      {% for id, rotulo in temas.items() %}<option value="{{ id }}" {% if id == a.tema %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+    </select>
+    <button class="botao verde" name="acao" value="aprovar" type="submit">{{ icone("check") }}Aprovar e publicar</button>
+  </form>
+  <form method="post" action="/revisao/{{ a.id }}">
+    <label for="motivo-{{ a.id }}">Motivo da rejeição</label>
+    <input type="text" id="motivo-{{ a.id }}" name="motivo" required maxlength="300" placeholder="Ex.: informação não confirmada">
+    <button class="botao perigo" name="acao" value="rejeitar" type="submit">Rejeitar</button>
+  </form>
+</article>
+{% else %}
+<p class="vazio">Nenhum rascunho esperando revisão.</p>
+{% endfor %}
+<a class="botao claro" href="/golpes">Ver a página pública de golpes</a>
+{% endblock %}

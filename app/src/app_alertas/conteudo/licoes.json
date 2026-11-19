@@ -1,0 +1,151 @@
+{
+  "trilha": "Golpes por mensagem",
+  "testes": {
+    "pre": {
+      "titulo": "Antes de começar",
+      "intro": "Três perguntas rápidas para saber de onde você parte. Não vale nota: é só para medir o quanto você aprende.",
+      "perguntas": [
+        {"pergunta": "Chega a mensagem: \"Banco Horizonte: compra de R$ 1.900 aprovada. Se não foi você, clique aqui.\" O que é mais seguro fazer?",
+         "opcoes": ["Clicar no link para cancelar logo", "Abrir o aplicativo do banco por conta própria e conferir", "Responder a mensagem perguntando se é verdade"],
+         "correta": 1,
+         "explicacao": "O link pode levar a uma página falsa. Abrir o aplicativo oficial você mesmo é o caminho seguro."},
+        {"pergunta": "Alguém diz ser seu neto, com número novo, e pede um Pix urgente. O que fazer primeiro?",
+         "opcoes": ["Fazer o Pix, porque é urgente", "Ligar para o número antigo do seu neto", "Pedir uma foto dele"],
+         "correta": 1,
+         "explicacao": "Ligar para o número que você já conhece confirma quem está falando. Foto pode ser copiada da internet."},
+        {"pergunta": "Um vendedor pede o código de 6 dígitos que chegou por SMS no seu celular. Você deve:",
+         "opcoes": ["Passar o código, ele só quer confirmar o cadastro", "Nunca passar o código para ninguém", "Passar só os 3 primeiros números"],
+         "correta": 1,
+         "explicacao": "Esse código dá acesso ao seu WhatsApp ou à sua conta. Ninguém de verdade pede ele."}
+      ]
+    },
+    "pos": {
+      "titulo": "Teste final",
+      "intro": "Mais três perguntas, parecidas com as do começo. Assim você vê o quanto avançou.",
+      "perguntas": [
+        {"pergunta": "Chega um SMS: \"Seu cartão será bloqueado hoje. Regularize em horizonte-seguro.online\". O que fazer?",
+         "opcoes": ["Entrar no site para evitar o bloqueio", "Ignorar o link e ligar para o número no verso do cartão", "Encaminhar para a família ver"],
+         "correta": 1,
+         "explicacao": "Pressa mais link com nome de banco em site estranho são sinais fortes. Use o canal que você já conhece."},
+        {"pergunta": "Uma mensagem diz: \"Oi pai, meu celular quebrou, esse é meu número novo. Me ajuda com um Pix?\" O que fazer?",
+         "opcoes": ["Ligar para o número antigo do seu filho antes de qualquer coisa", "Mandar o Pix e perguntar depois", "Mandar metade do valor"],
+         "correta": 0,
+         "explicacao": "Confirme por um canal que você já conhecia. Se for golpe, qualquer valor enviado se perde."},
+        {"pergunta": "Uma pessoa liga dizendo ser do banco e pede sua senha para \"cancelar uma fraude\". Isso é:",
+         "opcoes": ["Normal, o banco precisa da senha para cancelar", "Sinal de golpe: banco nunca pede senha", "Normal se a pessoa souber seu nome"],
+         "correta": 1,
+         "explicacao": "Banco nenhum pede sua senha. Golpistas muitas vezes já sabem seu nome e CPF para parecer confiáveis."}
+      ]
+    }
+  },
+  "licoes": [
+    {
+      "id": "banco_falso",
+      "titulo": "O falso aviso do banco",
+      "resumo": "Mensagem que imita o banco, com pressa e link.",
+      "exemplo": "BANCO HORIZONTE: identificamos uma compra suspeita de R$ 2.890,00. Se não reconhece, acesse urgente bit.ly/hz-seguro e evite o bloqueio.",
+      "paragrafos": [
+        "O golpe começa com um susto: uma compra que você não fez, uma conta que vai ser bloqueada, um benefício que vai ser suspenso.",
+        "O susto faz você agir rápido. A mensagem traz um link para uma página que parece a do banco, mas é falsa. Ali o golpista pede senha, dados do cartão ou pede para você instalar um aplicativo.",
+        "Às vezes, em vez do link, a mensagem pede para você ligar para uma \"central\". Do outro lado, quem atende é o golpista."
+      ],
+      "sinais": ["Pressa ou ameaça: \"hoje\", \"bloqueio\", \"urgente\"", "Link, principalmente encurtado ou com nome estranho", "Pedido de dados, senha ou para instalar aplicativo"],
+      "fazer": ["Não toque no link", "Abra o aplicativo do banco por conta própria ou ligue para o número no verso do cartão", "Apague a mensagem"],
+      "quiz": [
+        {"pergunta": "Qual destes é um sinal de golpe nessa mensagem?",
+         "opcoes": ["O nome do banco aparece em letras maiúsculas", "Ela pede pressa e traz um link", "Ela fala de valores em reais"],
+         "correta": 1,
+         "explicacao": "Pressa e link juntos são a dupla mais comum do falso aviso de banco."},
+        {"pergunta": "Para conferir se a compra existe mesmo, o melhor é:",
+         "opcoes": ["Abrir o aplicativo do banco você mesmo", "Tocar no link da mensagem", "Responder \"não fui eu\""],
+         "correta": 0,
+         "explicacao": "Você chega ao banco por um caminho que você controla, não pelo que o golpista mandou."},
+        {"pergunta": "Uma \"central do banco\" pede para você instalar um aplicativo de proteção. Você:",
+         "opcoes": ["Instala, é para sua segurança", "Desliga e liga você mesmo para o número do cartão", "Instala e depois apaga"],
+         "correta": 1,
+         "explicacao": "Esse aplicativo dá ao golpista o controle do seu celular. Banco não pede isso."}
+      ]
+    },
+    {
+      "id": "pix_parente",
+      "titulo": "O parente com número novo",
+      "resumo": "Alguém finge ser da família e pede dinheiro.",
+      "exemplo": "Oi mãe, troquei de número, salva esse aqui. Tô precisando de um Pix de 850 reais pra pagar um boleto, te devolvo amanhã.",
+      "paragrafos": [
+        "O golpista pega a foto e o nome de alguém da sua família nas redes sociais. Depois manda mensagem de um número desconhecido dizendo que trocou de celular.",
+        "A conversa começa carinhosa. Logo vem o pedido: um Pix para pagar uma conta, sempre com pressa e com promessa de devolver.",
+        "O Pix cai na hora e é muito difícil de recuperar. Por isso a conferência tem que vir antes."
+      ],
+      "sinais": ["\"Troquei de número\" ou \"meu celular quebrou\"", "Pedido de Pix ou transferência", "Pressa e desculpa para não poder falar por ligação"],
+      "fazer": ["Ligue para o número antigo da pessoa", "Faça uma pergunta que só ela saberia responder", "Não envie nenhum valor antes de confirmar"],
+      "quiz": [
+        {"pergunta": "O que torna essa mensagem suspeita?",
+         "opcoes": ["Ela chama você de \"mãe\"", "Número novo junto com pedido de Pix", "Ela usa abreviações"],
+         "correta": 1,
+         "explicacao": "Número desconhecido pedindo dinheiro é o centro desse golpe."},
+        {"pergunta": "A pessoa diz que não pode atender ligação agora. Isso indica:",
+         "opcoes": ["Que ela está ocupada, é normal", "Mais um sinal de golpe: ela evita ser reconhecida pela voz", "Que o celular dela está sem bateria"],
+         "correta": 1,
+         "explicacao": "Fugir da ligação é comum no golpe, porque a voz denunciaria o golpista."},
+        {"pergunta": "Qual é a melhor forma de confirmar?",
+         "opcoes": ["Ligar para o número antigo que você já tinha", "Pedir para a pessoa mandar uma foto", "Perguntar o nome dela"],
+         "correta": 0,
+         "explicacao": "Foto e nome o golpista já tem. O número antigo leva você à pessoa de verdade."}
+      ]
+    },
+    {
+      "id": "codigo_verificacao",
+      "titulo": "O pedido de código",
+      "resumo": "Pedem o código que chegou por SMS.",
+      "exemplo": "Olá, aqui é da loja onde você anunciou. Para confirmar o cadastro, me passa o código de 6 dígitos que chegou por SMS.",
+      "paragrafos": [
+        "Quando alguém tenta entrar no seu WhatsApp ou na sua conta por outro celular, o sistema manda um código para o seu número.",
+        "O golpista inventa uma desculpa para você passar esse código: confirmar cadastro, liberar entrega, receber prêmio.",
+        "Com o código, ele toma sua conta e passa a pedir dinheiro aos seus contatos se passando por você."
+      ],
+      "sinais": ["Pedido de código, senha ou token", "Mensagem dizendo que o código chegou \"por engano\"", "Desculpa de cadastro, entrega ou prêmio"],
+      "fazer": ["Nunca passe códigos para ninguém", "Ative a confirmação em duas etapas do WhatsApp", "Se já passou, avise sua família e procure o suporte do aplicativo"],
+      "quiz": [
+        {"pergunta": "Para que serve o código que chega por SMS?",
+         "opcoes": ["Para confirmar que é você quem está entrando na conta", "Para a loja confirmar seu cadastro", "Para nada, pode ignorar"],
+         "correta": 0,
+         "explicacao": "O código prova que é você. Quem tem ele consegue entrar como se fosse você."},
+        {"pergunta": "Alguém diz que mandou um código para você por engano e pede de volta. Você:",
+         "opcoes": ["Devolve, afinal foi engano", "Não passa: é golpe para roubar sua conta", "Passa só se a pessoa for educada"],
+         "correta": 1,
+         "explicacao": "Não existe código enviado por engano que precise ser devolvido."},
+        {"pergunta": "O que ajuda a proteger seu WhatsApp?",
+         "opcoes": ["Trocar a foto de perfil", "Ativar a confirmação em duas etapas", "Apagar as conversas antigas"],
+         "correta": 1,
+         "explicacao": "A confirmação em duas etapas cria uma senha extra que o golpista não tem."}
+      ]
+    },
+    {
+      "id": "promocao_falsa",
+      "titulo": "O prêmio que você não pediu",
+      "resumo": "Sorteio, brinde ou dinheiro a receber como isca.",
+      "exemplo": "Parabéns! Você foi sorteado e ganhou uma TV de 55 polegadas. Para resgatar, pague a taxa de entrega de R$ 39,90 pelo Pix.",
+      "paragrafos": [
+        "A mensagem traz uma notícia boa demais: um prêmio, um brinde, um dinheiro esquecido para receber.",
+        "Para liberar, pedem uma \"taxa\" pequena ou seus dados. A taxa é o golpe, e os dados são usados em outros golpes.",
+        "Valores a receber de verdade, como os do Banco Central, só são consultados no site oficial, que termina em .gov.br, e nunca pedem pagamento."
+      ],
+      "sinais": ["Prêmio de sorteio em que você não se inscreveu", "Taxa para liberar o prêmio", "Pedido de CPF ou dados para \"resgatar\""],
+      "fazer": ["Não pague nenhuma taxa", "Não informe dados", "Se quiser conferir, procure o site oficial por conta própria"],
+      "quiz": [
+        {"pergunta": "Qual é o sinal mais forte de golpe nessa mensagem?",
+         "opcoes": ["O tamanho da TV", "A taxa para liberar o prêmio", "A palavra \"parabéns\""],
+         "correta": 1,
+         "explicacao": "Prêmio de verdade não cobra taxa para ser entregue."},
+        {"pergunta": "Você não participou de nenhum sorteio. Isso quer dizer:",
+         "opcoes": ["Que alguém inscreveu você de presente", "Que a mensagem é quase certamente golpe", "Que foi sorte"],
+         "correta": 1,
+         "explicacao": "Ninguém sorteia quem não se inscreveu."},
+        {"pergunta": "Onde conferir se existe dinheiro esquecido no banco?",
+         "opcoes": ["No link da mensagem", "No site oficial do Banco Central, que termina em .gov.br", "Respondendo com seu CPF"],
+         "correta": 1,
+         "explicacao": "Endereços oficiais do governo terminam em .gov.br, e a consulta não cobra nada."}
+      ]
+    }
+  ]
+}

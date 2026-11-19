@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar %}
+{% block titulo %}Resultados · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/", "Início") }}{% endblock %}
+{% block conteudo %}
+<h1>Resultados do projeto</h1>
+<p class="sub">Dados reais e anônimos de uso deste aplicativo, somados. Nenhum número aqui é simulado.</p>
+<span class="selo-real">{{ icone("check") }}Medido no app, sem dados pessoais</span>
+
+<section class="destaque" aria-labelledby="t-ganho">
+  <h2 id="t-ganho">Ganho de conhecimento</h2>
+  {% if i.ganho_conhecimento_pp is not none %}
+  <p class="numero">{{ "%+.0f"|format(i.ganho_conhecimento_pp) }} pontos</p>
+  <p>Diferença no acerto de quem fez o teste rápido e o teste final ({{ i.amostra_pareada }} {{ "pessoa" if i.amostra_pareada == 1 else "pessoas" }}).</p>
+  <div class="barras">
+    <div class="barra-linha"><span>Antes das aulas</span><div class="barra"><i style="width: {{ i.acerto_pre_pct }}%"></i></div><b>{{ "%.0f"|format(i.acerto_pre_pct) }}%</b></div>
+    <div class="barra-linha"><span>Depois das aulas</span><div class="barra depois"><i style="width: {{ i.acerto_pos_pct }}%"></i></div><b>{{ "%.0f"|format(i.acerto_pos_pct) }}%</b></div>
+  </div>
+  {% else %}
+  <p class="numero">—</p>
+  <p>Ainda ninguém fez o teste rápido e o teste final. O número aparece aqui quando a primeira pessoa terminar.</p>
+  {% endif %}
+</section>
+
+{% if i.amostra_pequena and i.amostra_pareada > 0 %}
+<p class="alerta-dado" role="note">Amostra pequena: {{ i.amostra_pareada }} {{ "pessoa fez" if i.amostra_pareada == 1 else "pessoas fizeram" }} os dois testes. Use estes números como sinal inicial, não como resultado estatístico.</p>
+{% endif %}
+
+<div class="numeros">
+  <div><b>{{ i.praticas_concluidas }}</b><span>lições do celular concluídas</span></div>
+  <div><b>{{ i.pessoas_praticando }}</b><span>pessoas treinaram o celular</span></div>
+  <div><b>{{ i.analises_total }}</b><span>mensagens conferidas</span></div>
+  <div><b>{{ "%.0f%%"|format(i.ponte_analise_licao_pct) if i.ponte_analise_licao_pct is not none else "—" }}</b><span>das conferências viraram aula</span></div>
+</div>
+
+<table class="tabela">
+  <caption>Detalhes</caption>
+  <tbody>
+    {% for n, rot in [("alto", "Conferências com risco alto"), ("medio", "Com risco médio"), ("baixo", "Com risco baixo"), ("inconclusivo", "Sem sinais conhecidos")] %}
+    <tr><th scope="row">{{ rot }}</th><td>{{ i.analises_por_nivel[n] }}</td></tr>
+    {% endfor %}
+    <tr><th scope="row">Lições do celular concluídas</th><td>{{ i.praticas_concluidas }}</td></tr>
+    {% for lid, qtd in i.praticas_por_licao.items() %}
+    <tr class="subitem"><th scope="row">{{ titulos.get(lid, lid) }}</th><td>{{ qtd }}</td></tr>
+    {% endfor %}
+    <tr><th scope="row">Pessoas que começaram o Nível 2</th><td>{{ i.pessoas_na_trilha }}</td></tr>
+    <tr><th scope="row">Pessoas que fizeram o teste final</th><td>{{ i.pessoas_capacitadas }}</td></tr>
+    <tr><th scope="row">Taxa de conclusão do Nível 2</th><td>{{ "%.0f%%"|format(i.conclusao_trilha_pct) if i.conclusao_trilha_pct is not none else "ainda sem dados" }}</td></tr>
+    <tr><th scope="row">Aulas de golpe concluídas</th><td>{{ i.licoes_concluidas }}</td></tr>
+    {% for lid, qtd in i.licoes_concluidas_por_tema.items() %}
+    <tr class="subitem"><th scope="row">{{ titulos.get(lid, lid) }}</th><td>{{ qtd }}</td></tr>
+    {% endfor %}
+    <tr><th scope="row">Acerto nas perguntas das aulas</th><td>{{ "%.0f%%"|format(i.acerto_quizzes_licoes_pct) if i.acerto_quizzes_licoes_pct is not none else "ainda sem dados" }}</td></tr>
+  </tbody>
+</table>
+<p class="nota">Atualizado em {{ i.gerado_em | data_curta }} às {{ i.gerado_em[11:16] }} (UTC). Dados abertos em <a href="/api/impacto">/api/impacto</a>.</p>
+{% endblock %}

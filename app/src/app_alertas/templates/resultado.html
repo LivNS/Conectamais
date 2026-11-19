@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir, mensagem %}
+{% block titulo %}{{ r.rotulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/verificar", "Voltar") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#resultado") }}{% endblock %}
+{% block conteudo %}
+{% set cabecalhos = {
+  "alto": ("Cuidado!", "Parece golpe."),
+  "medio": ("Atenção!", "Tem sinais de golpe."),
+  "baixo": ("Poucos sinais", "Mesmo assim, confira pelo canal oficial."),
+  "inconclusivo": ("Não deu para saber", "Na dúvida, confira pelo canal oficial.")} %}
+<div id="resultado" style="display:flex;flex-direction:column;gap:.8rem">
+  <section class="veredito veredito-{{ r.nivel }}" aria-labelledby="t-risco">
+    {{ icone(r.nivel) }}
+    <h1 id="t-risco">{{ cabecalhos[r.nivel][0] }}</h1>
+    <p>{{ cabecalhos[r.nivel][1] }}</p>
+    <small style="font-size:.86rem;opacity:.95">{{ r.rotulo }}</small>
+  </section>
+
+  {% if r.motivo_inconclusivo %}<p>{{ r.motivo_inconclusivo }}</p>{% endif %}
+  {% if r.tem_dado_sensivel %}
+  <p class="alerta-dado" role="note">A mensagem parece ter CPF, cartão ou código. Não guardamos nada, mas evite colar esses dados.</p>
+  {% endif %}
+
+  {% if r.sinais %}
+  <p class="rotulo-pequeno">Os sinais estão em amarelo:</p>
+  {{ mensagem(partes, "desenhar") }}
+  <h2>Por que desconfiar</h2>
+  <ul class="sinais">
+    {% for s in r.sinais %}<li><b>{{ s.titulo }}</b><span>{{ s.explicacao }}</span></li>{% endfor %}
+  </ul>
+  {% endif %}
+
+  <h2>Faça assim:</h2>
+  <div class="acoes-lista">
+    {% for a in r.acoes %}<div class="acao"><span class="circulo">{{ icone("check") }}</span><b>{{ a }}</b></div>{% endfor %}
+  </div>
+</div>
+
+<div class="pilha">
+  {% if licao %}<a class="botao verde" href="/aprender/{{ licao.id }}?origem=analise">{{ icone("livro") }}Aprender a reconhecer este golpe</a>{% endif %}
+  {% if r.nivel in ("alto", "medio") %}<a class="botao claro" href="/aprender/celular/bloquear">Como bloquear o número</a>{% endif %}
+  <a class="botao claro" href="/verificar">Conferir outra mensagem</a>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar %}
+{% block titulo %}Aprender o celular · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/", "Início") }}{% endblock %}
+{% block conteudo %}
+<div>
+  <h1>Aprender o celular</h1>
+  <p class="seu-celular">Seu celular: <b data-nome-celular>Android</b> · <button type="button" data-trocar-celular>Não é esse?</button></p>
+  <div class="escolha-celular" data-caixa-celular hidden role="group" aria-label="Qual é o seu celular?">
+    <button type="button" data-escolher-celular="android" aria-pressed="false">Android<br><small>Samsung, Motorola…</small></button>
+    <button type="button" data-escolher-celular="iphone" aria-pressed="false">iPhone</button>
+  </div>
+</div>
+
+<a class="continuar" href="/aprender/celular/{{ nivel1.licoes[0].id }}" data-continuar>
+  <span><small data-continuar-rotulo>Comece por aqui</small><b data-continuar-nome>{{ nivel1.licoes[0].titulo }}</b></span>
+  <i>{{ icone("play") }}</i>
+</a>
+
+<section aria-labelledby="t-n1">
+  <div class="nivel-cab">
+    <span class="etiqueta">Nível 1</span>
+    <h2 id="t-n1">{{ nivel1.titulo }}</h2>
+    <p class="sub">{{ nivel1.descricao }} · <span data-contagem>0 de {{ nivel1.licoes | length }} feitas</span></p>
+  </div>
+  <div class="grade" data-nivel="1" style="margin-top:.6rem">
+    {% for l in nivel1.licoes %}
+    <a class="ladrilho" href="/aprender/celular/{{ l.id }}" data-progresso="{{ l.id }}">
+      <span class="ladrilho-icone">{{ icone(l.icone) }}</span>
+      <b>{{ l.titulo }}</b>
+      <small>{{ l.resumo }}</small>
+      <span class="selo-feito" role="img" aria-label="Feita">{{ icone("check") }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="nivel2" id="nivel2" aria-labelledby="t-n2">
+  <span class="etiqueta verde">Nível 2</span>
+  <h2 id="t-n2" style="margin:0">Entender e se proteger</h2>
+  <p>Aulas curtas que explicam o porquê das coisas. Cada uma termina com perguntas.</p>
+  <p class="sub" style="color:#134E40"><span data-contagem>0 feitas</span></p>
+  <div data-nivel="2" style="display:flex;flex-direction:column;gap:.5rem">
+    <a class="linha-aula" href="/aprender/teste/pre" data-progresso="pre">
+      <span class="ladrilho-icone">{{ icone("livro") }}</span>
+      <span><b>Teste rápido: o que você já sabe</b><small>3 perguntas, sem nota</small></span>
+      <span class="selo-feito" role="img" aria-label="Feito">{{ icone("check") }}</span>
+    </a>
+    {% for a in aulas %}
+    <a class="linha-aula" href="/aprender/aula/{{ a.id }}" data-progresso="{{ a.id }}">
+      <span class="ladrilho-icone">{{ icone(a.icone) }}</span>
+      <span><b>{{ a.titulo }}</b><small>3 min</small></span>
+      <span class="selo-feito" role="img" aria-label="Feita">{{ icone("check") }}</span>
+    </a>
+    {% endfor %}
+    {% for l in licoes %}
+    <a class="linha-aula" href="/aprender/{{ l.id }}" data-progresso="{{ l.id }}">
+      <span class="ladrilho-icone">{{ icone(icones_licoes.get(l.id, "escudo")) }}</span>
+      <span><b>{{ l.titulo }}</b><small>3 min · 3 perguntas</small></span>
+      <span class="selo-feito" role="img" aria-label="Feita">{{ icone("check") }}</span>
+    </a>
+    {% endfor %}
+    <a class="linha-aula" href="/aprender/teste/pos" data-progresso="pos">
+      <span class="ladrilho-icone">{{ icone("check") }}</span>
+      <span><b>Teste final</b><small>Compare com o começo</small></span>
+      <span class="selo-feito" role="img" aria-label="Feito">{{ icone("check") }}</span>
+    </a>
+  </div>
+</section>
+
+<p class="nota" style="margin-top:.6rem">Seu progresso fica só neste aparelho, sem cadastro.</p>
+<button type="button" class="botao claro" data-apagar>Apagar meu progresso</button>
+<p class="nota" data-apagar-msg role="status"></p>
+{% endblock %}

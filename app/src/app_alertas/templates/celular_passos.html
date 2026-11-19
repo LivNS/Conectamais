@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir %}
+{% block titulo %}{{ l.titulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/aprender", "Lições") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#licao-passos") }}{% endblock %}
+{% block conteudo %}
+<div id="licao-passos" data-licao-passos="{{ l.id }}" style="display:flex;flex-direction:column;gap:.8rem">
+  <script type="application/json" data-passos-dados>{{ {"android": l.android, "iphone": l.iphone} | tojson }}</script>
+  <span class="etiqueta">Nível 1</span>
+  <h1>{{ l.titulo }}</h1>
+  <p class="seu-celular">Passos para <b data-nome-celular>Android</b> · <button type="button" data-trocar-celular>Não é esse?</button></p>
+  <div class="escolha-celular" data-caixa-celular hidden role="group" aria-label="Qual é o seu celular?">
+    <button type="button" data-escolher-celular="android" aria-pressed="false">Android</button>
+    <button type="button" data-escolher-celular="iphone" aria-pressed="false">iPhone</button>
+  </div>
+
+  <div data-em-passos style="display:flex;flex-direction:column;gap:.8rem">
+    <div class="progresso-passos"><span class="bolinhas" data-bolinhas aria-hidden="true"></span><span>Passo <span data-num>1</span> de <span data-total>{{ l.android | length }}</span></span></div>
+    <div class="cartao" style="display:flex;gap:.7rem;align-items:flex-start">
+      <span class="passo-numero" aria-hidden="true">{{ icone("dedo") }}</span>
+      <p class="passo-texto" data-passo-texto tabindex="-1" aria-live="polite">{{ l.android[0] }}</p>
+    </div>
+    <p class="nota">Faça no seu celular agora. Depois volte aqui e toque no botão.</p>
+    <div class="pilha">
+      <button type="button" class="botao" data-proximo>Já fiz, próximo</button>
+      <button type="button" class="botao claro" data-anterior hidden>Voltar um passo</button>
+    </div>
+    <noscript><ol>{% for p in l.android %}<li>{{ p }}</li>{% endfor %}</ol></noscript>
+  </div>
+
+  <div data-fim hidden>
+    {% with texto_fim="Você aprendeu: " ~ (l.titulo | lower) ~ ". Repita quando quiser." %}{% include "_fim_pratica.html" %}{% endwith %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar %}
+{% block titulo %}Como cuidamos dos seus dados · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/", "Início") }}{% endblock %}
+{% block conteudo %}
+<h1>Como cuidamos dos seus dados</h1>
+<p style="font-size:1.05rem">A forma mais segura de proteger seus dados é não pedir. Por isso o {{ app_nome }} funciona sem cadastro.</p>
+<div class="acoes-lista">
+  <div class="acao"><span class="circulo">{{ icone("check") }}</span><b>A mensagem que você confere é analisada e descartada na hora.</b></div>
+  <div class="acao"><span class="circulo">{{ icone("check") }}</span><b>Nunca abrimos os links da mensagem.</b></div>
+  <div class="acao"><span class="circulo">{{ icone("check") }}</span><b>Guardamos só contagens, como “acertou 2 de 3”, ligadas a um número aleatório do seu aparelho.</b></div>
+  <div class="acao"><span class="circulo">{{ icone("check") }}</span><b>Nunca pedimos senha, código, CPF ou cartão.</b></div>
+  <div class="acao"><span class="circulo">{{ icone("check") }}</span><b>As contagens ficam por até 12 meses e só aparecem somadas.</b></div>
+</div>
+<h2>Quer apagar tudo?</h2>
+<p>O botão apaga seu progresso deste aparelho e as contagens ligadas a ele no servidor.</p>
+<button type="button" class="botao perigo" data-apagar>Apagar meus dados</button>
+<p class="nota" data-apagar-msg role="status"></p>
+{% endblock %}

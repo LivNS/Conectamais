@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_voltar.html" import voltar, ouvir %}
+{% block titulo %}{{ l.titulo }} · {{ app_nome }}{% endblock %}
+{% block voltar %}{{ voltar("/aprender", "Lições") }}{% endblock %}
+{% block ouvir %}{{ ouvir("#licao-audio") }}{% endblock %}
+{% block conteudo %}
+<div id="licao-audio" data-licao-audio data-titulos='["Toque na Maria", "Segure o botão verde e fale", "Muito bem! Áudio enviado."]' style="display:flex;flex-direction:column;gap:.8rem">
+  <div class="progresso-passos"><span class="bolinhas" aria-hidden="true"><i data-bolinha class="on"></i><i data-bolinha></i><i data-bolinha></i></span><span>Passo <span data-num>1</span> de 3</span></div>
+  <h1 data-titulo aria-live="polite">Toque na Maria</h1>
+
+  <div class="simulador">
+    <div class="conversas" data-fase="0">
+      <button type="button" class="conversa-linha" data-conversa><span class="avatar">F</span><b>Família</b></button>
+      <button type="button" class="conversa-linha alvo anel" data-conversa data-alvo><span class="avatar">M</span><b>Maria</b><span class="mao mexe" aria-hidden="true">{{ icone("dedo") }}</span></button>
+      <button type="button" class="conversa-linha" data-conversa><span class="avatar">P</span><b>Dr. Paulo</b></button>
+    </div>
+    <div data-fase="1,2" hidden>
+      <div class="chat-topo"><span class="avatar" style="background:var(--nevoa);color:var(--azul)">M</span><b>Maria</b></div>
+      <div class="chat-corpo">
+        <p class="balao-recebido">Me manda um áudio?</p>
+        <div class="balao-enviado" data-fase="2" hidden>
+          {{ icone("play") }}
+          <span class="onda" aria-hidden="true"><i style="height:10px"></i><i style="height:20px"></i><i style="height:14px"></i><i style="height:24px"></i><i style="height:12px"></i><i style="height:18px"></i></span>
+          <span class="so-leitor">Áudio enviado</span>
+        </div>
+      </div>
+      <div class="chat-base">
+        <span class="gravando" data-gravando role="status" hidden>Gravando…</span>
+        <span class="mao mao-lado" data-mao-mic aria-hidden="true"><span class="mao mexe">{{ icone("dedo") }}</span></span>
+        <button type="button" class="mic" data-mic aria-label="Segure para gravar um áudio">{{ icone("microfone") }}</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="erro-gentil" data-erro role="status" hidden></p>
+
+  <div data-fase="2" hidden>
+    {% with texto_fim="No celular de verdade é igualzinho: segure, fale e solte." %}{% include "_fim_pratica.html" %}{% endwith %}
+  </div>
+  <div data-fase="1" hidden><button type="button" class="botao claro" data-voltar-passo>Voltar um passo</button></div>
+  <p class="treino-seguro">{{ icone("escudo-simples") }}É só um treino: nada é enviado</p>
+</div>
+{% endblock %}

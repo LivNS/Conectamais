@@ -1,0 +1,17 @@
+{% from "_icones.html" import icone %}
+{% macro voltar(url, texto) -%}
+<a class="pilula" href="{{ url }}">{{ icone("voltar") }}{{ texto }}</a>
+{%- endmacro %}
+{% macro ouvir(alvo) -%}
+<button type="button" class="pilula redondo" data-ouvir="{{ alvo }}" aria-label="Ouvir o que está na tela">{{ icone("som") }}</button>
+{%- endmacro %}
+{% macro mensagem(partes, classe="") -%}
+<p class="mensagem {{ classe }}">{% for texto, marcado in partes %}{% if marcado %}<mark>{{ texto }}</mark>{% else %}{{ texto }}{% endif %}{% endfor %}</p>
+{%- endmacro %}
+{% macro acoes(lista) -%}
+<div class="acoes-lista">
+  {% for tipo, texto in lista %}
+  <div class="acao {{ 'nao' if tipo == 'nao' else '' }}"><span class="circulo">{{ icone(tipo) }}</span><b>{{ texto }}</b></div>
+  {% endfor %}
+</div>
+{%- endmacro %}
