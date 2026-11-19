@@ -61,7 +61,7 @@ jobs:
           docker build -t conecta-plus:ci ./app
 
       - name: Trivy - Scan de vulnerabilidades na imagem
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: "conecta-plus:ci"
           format: "table"
