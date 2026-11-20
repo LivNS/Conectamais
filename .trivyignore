@@ -1,0 +1,7 @@
+# CVE-2025-47273 (setuptools 70.3.0, path traversal no PackageIndex)
+# Não é um pacote instalado: o Trivy acha essa versão num SBOM de terceiros que
+# vem dentro da imagem oficial python:3.12-slim (aviso "Third-party SBOM may lead
+# to inaccurate vulnerability detection" no log). O setuptools é removido da
+# imagem no Dockerfile (pip uninstall) e o app nunca usa o PackageIndex.
+# Risco aceito e revisado em 19/11/2026. Reavaliar quando a imagem base mudar.
+CVE-2025-47273
