@@ -9,8 +9,9 @@ COPY requirements.txt .
 # (o Trivy barra a imagem se houver HIGH/CRITICAL com correção disponível).
 # nosemgrep: dockerfile.best-practice.avoid-apt-get-upgrade
 RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/* \
- && pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1" \
- && pip install --no-cache-dir -r requirements.txt
+ && pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt \
+ && pip uninstall -y setuptools wheel
 COPY src/ ./src/
 RUN useradd --create-home --uid 10001 app && mkdir -p /dados && chown app /dados
 USER app
