@@ -23,7 +23,9 @@
   <ul class="lista">{% for d in a.como_se_proteger %}<li>{{ d }}</li>{% endfor %}</ul>
   {% if a.link_fonte %}<p><a href="{{ a.link_fonte }}" rel="noopener noreferrer" target="_blank">Conferir na fonte original</a></p>{% endif %}
   {% if a.precisa_revisar_tema %}<p class="alerta-dado">O robô não reconheceu o tema. Escolha um antes de aprovar.</p>{% endif %}
+  <!-- nosemgrep: python.django.security.django-no-csrf-token -- o app não é Django: o token CSRF próprio vai no campo csrf_token -->
   <form method="post" action="/revisao/{{ a.id }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <label for="tema-{{ a.id }}">Tema</label>
     <select id="tema-{{ a.id }}" name="tema" {% if a.precisa_revisar_tema %}required{% endif %}>
       {% if a.precisa_revisar_tema %}<option value="">Escolha o tema</option>{% endif %}
@@ -31,7 +33,9 @@
     </select>
     <button class="botao verde" name="acao" value="aprovar" type="submit">{{ icone("check") }}Aprovar e publicar</button>
   </form>
+  <!-- nosemgrep: python.django.security.django-no-csrf-token -- o app não é Django: o token CSRF próprio vai no campo csrf_token -->
   <form method="post" action="/revisao/{{ a.id }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <label for="motivo-{{ a.id }}">Motivo da rejeição</label>
     <input type="text" id="motivo-{{ a.id }}" name="motivo" required maxlength="300" placeholder="Ex.: informação não confirmada">
     <button class="botao perigo" name="acao" value="rejeitar" type="submit">Rejeitar</button>

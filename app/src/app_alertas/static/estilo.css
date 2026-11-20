@@ -116,6 +116,7 @@ p { margin: 0; }
   display: flex; align-items: center; gap: .7rem; text-decoration: none; color: var(--tinta);
   background: var(--papel); border: 3px solid var(--amarelo); border-radius: 1.27rem; padding: .7rem .8rem;
 }
+.bloco-alerta:hover { color: var(--tinta); }
 .bloco-alerta .bloco-icone { display: flex; width: 2.75rem; height: 2.75rem; background: var(--amarelo-claro); color: #7A5A00; }
 .bloco-alerta .bloco-icone svg { width: 1.45rem; height: 1.45rem; }
 .bloco-alerta b { display: block; font-size: 1.09rem; line-height: 1.15; color: var(--tinta); }
@@ -279,8 +280,10 @@ input.trilho::-moz-range-thumb { width: 2.4rem; height: 2.4rem; border-radius: 5
 .placar-pontos i.ok { background: var(--baixo); }
 .comparacao { font-size: 1.09rem; background: var(--baixo-fundo); border-radius: 1rem; padding: .8rem .9rem; }
 .figura-aula { background: var(--papel); border-radius: 1.36rem; padding: 1.1rem .9rem; display: flex; flex-direction: column; align-items: center; gap: .65rem; }
+.figura-aula .pilula-link { display: flex; align-items: center; gap: .35rem; background: var(--ceu); border-radius: 999px; padding: .45rem .8rem; font-weight: 700; font-size: .91rem; overflow-wrap: anywhere; }
 .figura-aula .pilula-link svg { width: 1.2rem; height: 1.2rem; color: var(--azul); }
 .passo-numero svg { width: 1.3rem; height: 1.3rem; }
+.figura-aula .grande { width: 4.4rem; height: 4.4rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .figura-aula .grande svg { width: 2.4rem; height: 2.4rem; }
 .figura-aula .linha { display: flex; align-items: center; gap: .9rem; }
 .comparar { width: 100%; display: flex; align-items: center; gap: .55rem; border-radius: .9rem; padding: .6rem; }

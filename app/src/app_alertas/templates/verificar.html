@@ -10,6 +10,7 @@
 <button type="button" class="colar-grande" data-colar-mensagem>{{ icone("colar") }}Colar a mensagem</button>
 <p class="erro-gentil" data-colar-aviso role="status" hidden></p>
 
+<!-- nosemgrep: python.django.security.django-no-csrf-token -- formulário público, sem login e sem gravar nada: não há o que forjar -->
 <form method="post" action="/verificar" style="display:flex;flex-direction:column;gap:.6rem">
   <label class="rotulo" for="texto">Ou cole aqui dentro:</label>
   <textarea id="texto" name="texto" maxlength="4000" required placeholder="Toque e segure aqui, depois escolha Colar">{{ texto }}</textarea>

@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: conecta
+    folder: Conecta+
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

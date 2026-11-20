@@ -67,6 +67,8 @@ def inserir_rascunho(dados: dict) -> bool:
                else int(dados[c]) if c == "precisa_revisar_tema" else dados.get(c) for c in CAMPOS]
     with _conexao() as con:
         try:
+            # só nomes de colunas fixos entram no f-string; os valores vão como parâmetros "?"
+            # nosemgrep: python.sqlalchemy.security.sqlalchemy-execute-raw-query
             con.execute(f"INSERT INTO alertas ({', '.join(CAMPOS)}) VALUES ({', '.join('?' * len(CAMPOS))})",
                         valores)
         except sqlite3.IntegrityError:
@@ -77,6 +79,8 @@ def inserir_rascunho(dados: dict) -> bool:
 def listar(status: str) -> list[dict]:
     ordem = "COALESCE(revisado_em, criado_em) DESC" if status == "publicado" else "criado_em"
     with _conexao() as con:
+        # "ordem" é uma de duas constantes do código; o status vai como parâmetro "?"
+        # nosemgrep: python.sqlalchemy.security.sqlalchemy-execute-raw-query
         return [_dict(l) for l in con.execute(f"SELECT * FROM alertas WHERE status = ? ORDER BY {ordem}", (status,))]
 
 

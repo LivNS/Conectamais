@@ -9,6 +9,8 @@ Variáveis de ambiente:
 """
 from __future__ import annotations
 
+import hashlib
+import hmac
 import os
 import secrets
 import sys
@@ -29,6 +31,7 @@ from pydantic import BaseModel, Field, HttpUrl  # noqa: E402
 import banco  # noqa: E402
 import dados_iniciais  # noqa: E402
 import eventos  # noqa: E402
+import metricas  # noqa: E402
 from rotas_mvp import router as rotas_mvp  # noqa: E402
 from rotas_v2 import router as rotas_v2  # noqa: E402
 from web import TEMAS, celular, pagina  # noqa: E402
@@ -44,6 +47,7 @@ async def ciclo(_app: FastAPI):
 
 
 app = FastAPI(title="Conecta+ — API do MVP", version="1.0.0", lifespan=ciclo)
+metricas.instalar(app)
 app.mount("/static", StaticFiles(directory=AQUI / "static"), name="static")
 app.include_router(rotas_mvp)
 app.include_router(rotas_v2)
@@ -71,6 +75,16 @@ def exigir_revisor(cred: Annotated[HTTPBasicCredentials, Depends(basic)]) -> str
     if not ok:
         raise HTTPException(401, "acesso negado", headers={"WWW-Authenticate": "Basic"})
     return cred.username
+
+
+# CSRF: o navegador reenvia o login Basic sozinho, então um site malicioso poderia
+# fazer o revisor "aprovar" um alerta sem querer. Cada formulário da revisão leva
+# um token assinado com uma chave que só existe na memória do servidor.
+_CHAVE_CSRF = secrets.token_bytes(32)
+
+
+def token_csrf(usuario: str) -> str:
+    return hmac.new(_CHAVE_CSRF, usuario.encode(), hashlib.sha256).hexdigest()
 
 
 # ---------- contrato com o robô (não mudar sem mudar o RPA) ----------
@@ -158,13 +172,16 @@ def pagina_alertas():
 @app.get("/revisao", response_class=HTMLResponse)
 def pagina_revisao(request: Request, usuario: Annotated[str, Depends(exigir_revisor)], feito: str = ""):
     return pagina(request, "revisao.html", pendentes=banco.listar("pendente_revisao"), temas=TEMAS,
-                  contagem=banco.contar(), usuario=usuario, feito=feito)
+                  contagem=banco.contar(), usuario=usuario, feito=feito,
+                  csrf_token=token_csrf(usuario))
 
 
 @app.post("/revisao/{id_}")
-def revisar_pela_tela(id_: str, _usuario: Annotated[str, Depends(exigir_revisor)],
+def revisar_pela_tela(id_: str, usuario: Annotated[str, Depends(exigir_revisor)],
                       acao: Annotated[str, Form()], motivo: Annotated[str, Form()] = "",
-                      tema: Annotated[str, Form()] = ""):
+                      tema: Annotated[str, Form()] = "", csrf_token: Annotated[str, Form()] = ""):
+    if not hmac.compare_digest(csrf_token, token_csrf(usuario)):
+        raise HTTPException(403, "formulário expirado: recarregue a página de revisão")
     if acao not in ("aprovar", "rejeitar"):
         raise HTTPException(422, "ação inválida")
     _aplicar(id_, acao == "aprovar", motivo, tema or None)

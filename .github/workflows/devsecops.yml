@@ -1,88 +1,139 @@
-name: DevSecOps Pipeline - Conecta+
+# Pipeline DevSecOps do Conecta+
+# A cada push: testes, Gitleaks (segredos), Semgrep (código), Trivy (imagem e
+# configuração) e validação do Terraform. O deploy no Render só acontece na
+# branch main e só se TODOS os portões passarem.
+#
+# GitHub Secrets usados (Settings > Secrets and variables > Actions):
+#   RENDER_DEPLOY_HOOK_URL  URL do Deploy Hook do serviço no Render
+#   RENDER_API_KEY          chave da API do Render (para acompanhar o deploy)
+# Variável (aba Variables):
+#   RENDER_SERVICE_ID       srv-dbv591ajnfac73cldbkg
+
+name: DevSecOps
 
 on:
   push:
-    branches: ["**"]
   pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
-  security-events: write
+
+concurrency:
+  group: devsecops-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  security-and-build:
-    name: Build, IaC Validate, Gitleaks, Semgrep e Trivy
+  testes:
+    name: Build e testes
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependências
+        run: pip install -r app/requirements-dev.txt
+      - name: Rodar testes
+        working-directory: app
+        run: python -m pytest tests -q
+
+  gitleaks:
+    name: Gitleaks (segredos)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Gitleaks - Detecção de segredos
-        uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Semgrep - Análise estática de segurança (SAST)
-        uses: semgrep/semgrep-action@v1
-        with:
-          config: >-
-            p/python
-            p/security-audit
-            p/secrets
+  semgrep:
+    name: Semgrep (código)
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - name: Varredura SAST
+        run: >
+          semgrep scan --error --metrics=off --severity ERROR --severity WARNING
+          --config p/python --config p/owasp-top-ten
+          --config p/dockerfile --config p/secrets
+          app/
 
-      - name: Terraform - Setup e Validação IaC
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.8
-
-      - name: Terraform Init e Validate
-        working-directory: app/terraform
+  trivy:
+    name: Trivy (imagem e configuração)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build da imagem
+        run: docker build -t conecta-mais:${{ github.sha }} app
+      - name: Vulnerabilidades na imagem (HIGH/CRITICAL com correção)
         run: |
-          terraform init -backend=false
-          terraform validate
-
-      - name: Configurar Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Instalar dependências e rodar testes
-        working-directory: app
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:0.58.1 image --exit-code 1 --ignore-unfixed \
+            --severity HIGH,CRITICAL --no-progress conecta-mais:${{ github.sha }}
+      - name: Configuração insegura (Dockerfile, Terraform, compose)
         run: |
-          pip install --no-cache-dir -r requirements-dev.txt
-          python -m pytest tests -q
+          docker run --rm -v "$PWD:/src" aquasec/trivy:0.58.1 config \
+            --exit-code 1 --severity HIGH,CRITICAL /src
 
-      - name: Build da imagem Docker do Conecta+
-        run: |
-          docker build -t conecta-plus:ci ./app
-
-      - name: Trivy - Scan de vulnerabilidades na imagem
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: "conecta-plus:ci"
-          format: "table"
-          exit-code: "1"
-          ignore-unfixed: true
-          vuln-type: "os,library"
-          severity: "CRITICAL,HIGH"
+  terraform:
+    name: Terraform (fmt e validate)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false -input=false
+      - run: terraform validate
 
   deploy:
-    name: Deploy Automático no Render
-    needs: security-and-build
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    name: Deploy no Render
+    needs: [testes, gitleaks, semgrep, trivy, terraform]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
+    environment: producao
     steps:
-      - name: Disparar Deploy Hook no Render
+      - name: Disparar o deploy
+        id: hook
         env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
-          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "Erro: secret RENDER_DEPLOY_HOOK_URL não configurado."
-            exit 1
+          test -n "$HOOK" || { echo "::error::Secret RENDER_DEPLOY_HOOK_URL não configurado"; exit 1; }
+          resposta=$(curl -fsS -X POST "$HOOK")
+          echo "$resposta" | jq . || true
+          echo "deploy_id=$(echo "$resposta" | jq -r '.deploy.id // empty')" >> "$GITHUB_OUTPUT"
+      - name: Acompanhar até ficar no ar
+        if: steps.hook.outputs.deploy_id != ''
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICO: ${{ vars.RENDER_SERVICE_ID }}
+          DEPLOY: ${{ steps.hook.outputs.deploy_id }}
+        run: |
+          if [ -z "$RENDER_API_KEY" ] || [ -z "$SERVICO" ]; then
+            echo "Sem RENDER_API_KEY/RENDER_SERVICE_ID: pulando o acompanhamento"; exit 0
           fi
-          curl -fsSL -X POST "$RENDER_DEPLOY_HOOK_URL"
+          for i in $(seq 1 60); do
+            status=$(curl -fsS -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/services/$SERVICO/deploys/$DEPLOY" | jq -r .status)
+            echo "[$i] status do deploy: $status"
+            case "$status" in
+              live) exit 0 ;;
+              build_failed|update_failed|canceled|pre_deploy_failed) echo "::error::Deploy falhou ($status)"; exit 1 ;;
+            esac
+            sleep 15
+          done
+          echo "::error::Deploy não terminou em 15 minutos"; exit 1
+      - name: Teste de fumaça na URL pública
+        run: |
+          for i in $(seq 1 10); do
+            curl -fsS https://conecta-nznk.onrender.com/saude && exit 0
+            sleep 10
+          done
+          exit 1

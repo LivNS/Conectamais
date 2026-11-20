@@ -1,4 +1,5 @@
 """Alertas: contrato com o robô, revisão humana, página pública e telas gerais."""
+import re
 import sys
 from pathlib import Path
 
@@ -70,7 +71,9 @@ def test_fluxo_completo_robo_revisao_publicacao_pela_tela(cliente):
     cliente.post("/api/alertas/rascunhos", json=RASCUNHO, headers=ROBO)
     html = cliente.get("/revisao", auth=ADMIN).text
     assert RASCUNHO["titulo"] in html and "1 esperando revisão" in html
-    r = cliente.post(f"/revisao/{RASCUNHO['id']}", data={"acao": "aprovar", "tema": "banco_falso"},
+    token = re.search(r'name="csrf_token" value="([0-9a-f]+)"', html).group(1)
+    r = cliente.post(f"/revisao/{RASCUNHO['id']}",
+                     data={"acao": "aprovar", "tema": "banco_falso", "csrf_token": token},
                      auth=ADMIN, follow_redirects=False)
     assert r.status_code == 303
     publica = cliente.get("/golpes").text
@@ -133,3 +136,11 @@ def test_404_amigavel(cliente):
     r = cliente.get("/nao-existe")
     assert r.status_code == 404 and "Voltar ao início" in r.text
     assert cliente.get("/api/nao-existe").status_code == 404
+
+
+def test_revisao_barra_formulario_forjado_csrf(cliente):
+    cliente.post("/api/alertas/rascunhos", json=RASCUNHO, headers=ROBO)
+    for dados in ({"acao": "aprovar"}, {"acao": "aprovar", "csrf_token": "0" * 64}):
+        r = cliente.post(f"/revisao/{RASCUNHO['id']}", data=dados, auth=ADMIN, follow_redirects=False)
+        assert r.status_code == 403
+    assert RASCUNHO["titulo"] not in cliente.get("/golpes").text

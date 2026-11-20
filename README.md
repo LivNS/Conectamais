@@ -20,9 +20,9 @@ O Conecta+ é um app web para pessoas com 60 anos ou mais. Ele ensina a usar o c
 
 | Nome completo | RM |
 | --- | --- |
-| [Debora da Silva Amaral] | [550412] |
-| [Eduardo Pielich] | [99767] |
-| [Livia Namba Seraphim] | [97819] |
+| [nome] | [RM] |
+| [nome] | [RM] |
+| [nome] | [RM] |
 
 Global Solution 2026.2, FIAP — Engenharia de Software, desafio CitizenTech.
 
@@ -135,13 +135,20 @@ uvicorn main:app --reload
 
 Abra http://localhost:8000.
 
-### Com Docker
+### Com Docker Compose (app + Prometheus + Grafana)
 
 ```bash
-cd app
-docker build -t conecta-mais .
-docker run -p 8000:8000 -e ADMIN_USUARIO=revisor -e ADMIN_SENHA=troque-esta-senha conecta-mais
+cp .env.example .env          # troque as senhas dentro do .env
+docker compose up -d --build
 ```
+
+| Serviço | Endereço |
+| --- | --- |
+| App | http://localhost:8000 |
+| Prometheus | http://localhost:9090 (alertas em /alerts) |
+| Grafana | http://localhost:3000 (usuário `admin`, senha `GRAFANA_ADMIN_SENHA` do `.env`) |
+
+As portas ficam presas em `127.0.0.1`. Para o Prometheus ler também o MVP publicado, crie o arquivo `observabilidade/prometheus/render_token` com o valor do `METRICS_TOKEN` do Render (o arquivo está no `.gitignore`).
 
 ---
 
@@ -159,11 +166,44 @@ docker run -p 8000:8000 -e ADMIN_USUARIO=revisor -e ADMIN_SENHA=troque-esta-senh
 | `ADMIN_USUARIO` e `ADMIN_SENHA` | Login da tela de revisão de alertas (`/revisao`) |
 | `RPA_API_TOKEN` | Token que um robô usa para enviar rascunhos de alertas |
 | `APP_NOME` | Nome exibido (padrão: `Conecta+`) |
+| `METRICS_TOKEN` | Token que o Prometheus envia para ler `/metrics` |
 | `ALERTAS_DEMONSTRACAO` | `0` desliga os 4 alertas de demonstração que aparecem com o banco vazio |
 
 O Render define a `PORT` sozinho. No plano gratuito, o disco é apagado a cada novo deploy.
 
 ---
+
+## Secure DevOps
+
+| Peça | Onde está |
+| --- | --- |
+| Container | `app/Dockerfile`: imagem slim, usuário não root (uid 10001), sem segredo na imagem, healthcheck |
+| Stack local | `docker-compose.yml`: app + Prometheus + Grafana, container do app somente leitura e sem capabilities |
+| Infraestrutura como código | `infra/`: Terraform do Web Service no Render (provider `render-oss/render`) |
+| Pipeline | `.github/workflows/devsecops.yml`: testes, Gitleaks, Semgrep, Trivy e Terraform a cada push; deploy só na `main` e só se tudo passar |
+| Observabilidade | `observabilidade/`: Prometheus com 5 regras de alerta e dashboard do Grafana com as 4 métricas de ouro |
+
+### Terraform
+
+```bash
+cd infra
+cp terraform.tfvars.example terraform.tfvars   # troque os valores (o arquivo não vai para o Git)
+export RENDER_API_KEY=...        # Render > Account Settings > API Keys
+export RENDER_OWNER_ID=usr-...   # ID da conta (Render > Account Settings)
+terraform init
+terraform plan
+terraform apply                  # o import.tf traz o serviço que já existe
+```
+
+O `terraform.tfstate` e o `terraform.tfvars` estão no `.gitignore`.
+
+### Segredos do pipeline (GitHub > Settings > Secrets and variables > Actions)
+
+| Nome | Tipo | Valor |
+| --- | --- | --- |
+| `RENDER_DEPLOY_HOOK_URL` | Secret | Render > serviço > Settings > Deploy Hook |
+| `RENDER_API_KEY` | Secret | Chave da API do Render |
+| `RENDER_SERVICE_ID` | Variable | `srv-dbv591ajnfac73cldbkg` |
 
 ## Testes
 
@@ -172,12 +212,14 @@ cd app
 python -m pytest tests -q
 ```
 
-São 90 testes automáticos. Eles cobrem:
+São 94 testes automáticos. Eles cobrem:
 - o verificador, com 20 mensagens de gabarito;
 - as lições, as aulas e o catálogo de golpes;
 - a revisão humana dos alertas;
 - os eventos anônimos e a página de resultados;
 - a privacidade: um teste confere que o texto conferido não vai para o banco nem para os logs;
+- a observabilidade: o `/metrics` exige token e nunca mostra o texto conferido;
+- a revisão: um formulário forjado (sem token CSRF) é barrado;
 - os links: um teste segue cada link das telas principais e confere que nenhum leva a uma página quebrada.
 
 ---
@@ -185,6 +227,10 @@ São 90 testes automáticos. Eles cobrem:
 ## Estrutura
 
 ```
+.github/workflows/devsecops.yml   # pipeline DevSecOps
+docker-compose.yml                # app + Prometheus + Grafana
+infra/                            # Terraform (Render)
+observabilidade/                  # Prometheus (alertas) e Grafana (dashboard)
 app/
 ├── Dockerfile
 ├── requirements.txt
@@ -217,5 +263,6 @@ assets_mvp/                # prints das telas
 | `/privacidade` | Como cuidamos dos seus dados |
 | `/revisao` | Revisão de alertas (com login) |
 | `/saude` | Verificação de funcionamento |
+| `/metrics` | Métricas para o Prometheus (com token) |
 
 O Conecta+ orienta, mas não substitui o banco nem as autoridades. Na dúvida, confirme sempre pelo canal oficial.

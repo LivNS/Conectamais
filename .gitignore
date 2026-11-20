@@ -1,28 +1,23 @@
-*.py[cod]
-*.egg-info/
-**/.venv/
-**/.ven/
-**/.pytest_cache/
-**/__pycache__/
-
+# Segredos e configuração local
 .env
-.env.*
+*.env
 !.env.example
-*.pem
-*.key
+observabilidade/prometheus/render_token
 
-*.db
-*.db-journal
-*.sqlite
+# Terraform: state e variáveis NUNCA vão para o repositório
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/*.tfvars
+!infra/terraform.tfvars.example
+infra/crash.log
+infra/.terraform.tfstate.lock.info
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Dados locais
 *.sqlite3
-dados.sqlite3
-data/
-
-terraform/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.*
-terraform/*.tfvars
-!terraform/terraform.tfvars.example
-terraform/.terraform.lock.hcl
-
-*.log

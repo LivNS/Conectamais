@@ -1,0 +1,6 @@
+# Copie para terraform.tfvars (que NÃO vai para o Git) e troque os valores.
+# Alternativa: exporte TF_VAR_admin_senha=... no terminal.
+admin_usuario = "revisor"
+admin_senha   = "troque-esta-senha"
+rpa_api_token = "troque-este-token"
+metrics_token = "troque-este-token-de-metricas"

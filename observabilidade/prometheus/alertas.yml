@@ -1,0 +1,42 @@
+groups:
+  - name: conecta-golden-signals
+    rules:
+      - alert: ConectaForaDoAr
+        expr: up{job=~"conecta-.*"} == 0
+        for: 1m
+        labels: { severidade: critica }
+        annotations:
+          resumo: "Conecta+ ({{ $labels.ambiente }}) não responde há 1 minuto"
+
+      - alert: ConectaErros5xx
+        expr: |
+          sum by (job) (rate(http_requests_total{status=~"5.."}[5m]))
+            / clamp_min(sum by (job) (rate(http_requests_total[5m])), 0.001) > 0.05
+        for: 2m
+        labels: { severidade: critica }
+        annotations:
+          resumo: "Mais de 5% das respostas com erro 5xx em {{ $labels.job }}"
+
+      - alert: ConectaLento
+        expr: |
+          histogram_quantile(0.95, sum by (le, job) (rate(http_request_duration_seconds_bucket[5m]))) > 1
+        for: 5m
+        labels: { severidade: aviso }
+        annotations:
+          resumo: "p95 de latência acima de 1 s em {{ $labels.job }}"
+
+      - alert: ConectaSaturado
+        expr: |
+          max by (job) (http_requests_in_progress) > 20
+            or max by (job) (process_resident_memory_bytes) > 400e6
+        for: 2m
+        labels: { severidade: aviso }
+        annotations:
+          resumo: "{{ $labels.job }} perto do limite (fila de requisições ou memória > 400 MB de 512 MB)"
+
+      - alert: ConectaMuitasPaginasNaoEncontradas
+        expr: sum by (job) (rate(http_requests_total{status="404"}[1m])) > 0.2
+        for: 1m
+        labels: { severidade: aviso }
+        annotations:
+          resumo: "Muitos 404 em {{ $labels.job }}: link quebrado ou varredura"
