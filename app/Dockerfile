@@ -7,11 +7,13 @@ WORKDIR /app
 COPY requirements.txt .
 # Atualiza os pacotes do sistema da imagem base para fechar CVEs já corrigidas
 # (o Trivy barra a imagem se houver HIGH/CRITICAL com correção disponível).
+# O setuptools não é usado pelo app e tinha a CVE-2025-47273: é removido da imagem.
 # nosemgrep: dockerfile.best-practice.avoid-apt-get-upgrade
 RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/* \
  && pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt \
- && pip uninstall -y setuptools wheel
+ && pip uninstall -y setuptools wheel \
+ && find / -xdev -path /proc -prune -o \( -name "setuptools*" -o -name "_distutils_hack" -o -name "distutils-precedence.pth" \) -print0 | xargs -0 rm -rf
 COPY src/ ./src/
 RUN useradd --create-home --uid 10001 app && mkdir -p /dados && chown app /dados
 USER app
