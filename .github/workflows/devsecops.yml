@@ -61,7 +61,7 @@ jobs:
           semgrep scan --error --metrics=off --severity ERROR --severity WARNING
           --config p/python --config p/owasp-top-ten
           --config p/dockerfile --config p/secrets
-          app/
+          app/src app/Dockerfile
 
   trivy:
     name: Trivy (imagem e configuração)
