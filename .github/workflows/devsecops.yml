@@ -72,8 +72,8 @@ jobs:
         run: docker build -t conecta-mais:${{ github.sha }} app
       - name: Vulnerabilidades na imagem (HIGH/CRITICAL com correção)
         run: |
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-            aquasec/trivy:0.58.1 image --exit-code 1 --ignore-unfixed \
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/src" \
+          aquasec/trivy:0.58.1 image --exit-code 1 --ignore-unfixed --ignorefile /src/.trivyignore \
             --severity HIGH,CRITICAL --no-progress conecta-mais:${{ github.sha }}
       - name: Configuração insegura (Dockerfile, Terraform, compose)
         run: |
